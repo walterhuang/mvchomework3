@@ -10,8 +10,7 @@ namespace MvcHomework3.Controllers
     {
         protected override void HandleUnknownAction(string actionName)
         {
-
-            base.HandleUnknownAction(actionName);
+            Response.Redirect("/", true);
         }
     }
 }

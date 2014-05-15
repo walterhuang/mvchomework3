@@ -7,18 +7,65 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using MvcHomework3.Models;
+using System.IO;
+using System.Text;
 
 namespace MvcHomework3.Controllers
 {
     //[CheckIdFilter]
-    public class CustomerController : Controller
+    public class CustomerController : BaseController
     {
-        private CustomerEntities db = new CustomerEntities();
+        //private CustomerEntities db = new CustomerEntities();
+        private CustomerRepository repo = RepositoryHelper.GetCustomerRepository();
+
+        public ActionResult Download()
+        {
+            string csv = CreateCSVTextFile(repo.All().ToList());
+            return File(ASCIIEncoding.GetEncoding("big5").GetBytes(csv), "text/csv",
+                string.Format("{0}_客戶資料匯出.csv", DateTime.Now.ToString("yyyyMMdd")));
+        }
+
+        // http://stackoverflow.com/a/17698392/823247
+        private string CreateCSVTextFile<T>(List<T> data)
+        {
+            var properties = typeof(T).GetProperties();
+            var result = new StringBuilder();
+
+            foreach (var row in data)
+            {
+                var values = properties.Select(p => p.GetValue(row, null))
+                                       .Select(v => StringToCSVCell(Convert.ToString(v)));
+                var line = string.Join(",", values);
+                result.AppendLine(line);
+            }
+
+            return result.ToString();
+        }
+
+        private string StringToCSVCell(string str)
+        {
+            bool mustQuote = (str.Contains(",") || str.Contains("\"") || str.Contains("\r") || str.Contains("\n"));
+            if (mustQuote)
+            {
+                StringBuilder sb = new StringBuilder();
+                sb.Append("\"");
+                foreach (char nextChar in str)
+                {
+                    sb.Append(nextChar);
+                    if (nextChar == '"')
+                        sb.Append("\"");
+                }
+                sb.Append("\"");
+                return sb.ToString();
+            }
+
+            return str;
+        }
 
         // GET: /Customer/
         public ActionResult Index()
         {
-            return View(db.Customers.ToList());
+            return View(repo.All());
         }
 
         // GET: /Customer/Details/5
@@ -28,7 +75,7 @@ namespace MvcHomework3.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Customer customer = db.Customers.Find(id);
+            Customer customer = repo.All().SingleOrDefault(i => i.Id == id); //db.Customers.Find(id);
             if (customer == null)
             {
                 return HttpNotFound();
@@ -51,8 +98,10 @@ namespace MvcHomework3.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Customers.Add(customer);
-                db.SaveChanges();
+                //db.Customers.Add(customer);
+                //db.SaveChanges();
+                repo.Add(customer);
+                repo.UnitOfWork.Commit();
                 return RedirectToAction("Index");
             }
 
@@ -66,7 +115,7 @@ namespace MvcHomework3.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Customer customer = db.Customers.Find(id);
+            Customer customer = repo.All().SingleOrDefault(i => i.Id == id); //db.Customers.Find(id);
             if (customer == null)
             {
                 return HttpNotFound();
@@ -79,12 +128,21 @@ namespace MvcHomework3.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,Name,EIN,Phone,Fax,Address,Email")] Customer customer)
+        public ActionResult Edit([Bind(Include = "Id,Name,EIN,Phone,Fax,Address,Email")] CustomerUpdateVM customer)
         {
-            if (ModelState.IsValid)
+            if (TryUpdateModel(customer)) //ModelState.IsValid)
             {
-                db.Entry(customer).State = EntityState.Modified;
-                db.SaveChanges();
+                //db.Entry(customer).State = EntityState.Modified;
+                //db.SaveChanges();
+                var updated = repo.All().SingleOrDefault(i => i.Id == customer.Id);
+                //updated.Name = customer.Name;
+                //updated.EIN = customer.EIN;
+                //updated.Phone = customer.Phone;
+                //updated.Fax = customer.Fax;
+                //updated.Address = customer.Address;
+                //updated.Email = customer.Email;
+                AutoMapper.Mapper.DynamicMap<CustomerUpdateVM, Customer>(customer, updated);
+                repo.UnitOfWork.Commit();
                 return RedirectToAction("Index");
             }
             return View(customer);
@@ -97,7 +155,7 @@ namespace MvcHomework3.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Customer customer = db.Customers.Find(id);
+            Customer customer = repo.All().SingleOrDefault(i => i.Id == id); //db.Customers.Find(id);
             if (customer == null)
             {
                 return HttpNotFound();
@@ -110,9 +168,9 @@ namespace MvcHomework3.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            Customer customer = db.Customers.Find(id);
-            db.Customers.Remove(customer);
-            db.SaveChanges();
+            Customer customer = repo.All().SingleOrDefault(i => i.Id == id); //db.Customers.Find(id);
+            repo.Delete(customer); //db.Customers.Remove(customer);
+            repo.UnitOfWork.Commit(); //db.SaveChanges();
             return RedirectToAction("Index");
         }
 
@@ -120,7 +178,7 @@ namespace MvcHomework3.Controllers
         {
             if (disposing)
             {
-                db.Dispose();
+                repo.UnitOfWork.Context.Dispose(); //db.Dispose();
             }
             base.Dispose(disposing);
         }

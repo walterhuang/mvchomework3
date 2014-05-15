@@ -27,6 +27,7 @@ namespace MvcHomework3.Models
         public string Fax { get; set; }
         public string Address { get; set; }
         public string Email { get; set; }
+        public bool IsDelete { get; set; }
     
         public virtual ICollection<Contact> Contacts { get; set; }
         public virtual ICollection<Bank> Banks { get; set; }

@@ -1,24 +1,12 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Web;
+
 namespace MvcHomework3.Models
 {
-    using System;
-    using System.Collections.Generic;
-    using System.ComponentModel.DataAnnotations;
-    using System.Linq;
-
-    [MetadataType(typeof(ContactMetaData))]
-    public partial class Contact : IValidatableObject
-    {
-        public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
-        {
-            if (!string.IsNullOrEmpty(Email) &&
-                RepositoryHelper.GetContactRepository().All()
-                .Where(c => c.CustomerId == CustomerId)
-                .Any(e => e.Email == Email))
-                yield return new ValidationResult("Email duplicated.");
-        }
-    }
-
-    public partial class ContactMetaData
+    public class ContactUpdateVM : IValidatableObject
     {
         [Required]
         public int Id { get; set; }
@@ -44,6 +32,14 @@ namespace MvcHomework3.Models
         [StringLength(50, ErrorMessage = "欄位長度不得大於 50 個字元")]
         public string Phone { get; set; }
 
-        public virtual Customer Customer { get; set; }
+        public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+        {
+            if (!string.IsNullOrEmpty(Email) &&
+                RepositoryHelper.GetContactRepository().All()
+                .Where(c => c.CustomerId == CustomerId)
+                .Where(c => c.Id != Id)
+                .Any(e => e.Email == Email))
+                yield return new ValidationResult("Email duplicated.");
+        }
     }
 }

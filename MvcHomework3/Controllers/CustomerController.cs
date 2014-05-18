@@ -16,7 +16,16 @@ namespace MvcHomework3.Controllers
     public class CustomerController : BaseController
     {
         //private CustomerEntities db = new CustomerEntities();
-        private CustomerRepository repo = RepositoryHelper.GetCustomerRepository();
+        private CustomerRepository repo;
+        private ContactRepository contactRepo;
+        private BankRepository bankRepo;
+
+        public CustomerController()
+        {
+            repo = RepositoryHelper.GetCustomerRepository();
+            contactRepo = RepositoryHelper.GetContactRepository(repo.UnitOfWork);
+            bankRepo = RepositoryHelper.GetBankRepository(repo.UnitOfWork);
+        }
 
         public ActionResult Download()
         {
@@ -80,6 +89,10 @@ namespace MvcHomework3.Controllers
             {
                 return HttpNotFound();
             }
+
+            ViewBag.Contacts = customer.Contacts.ToList();
+            ViewBag.Banks = customer.Banks.ToList();
+
             return View(customer);
         }
 
@@ -120,7 +133,20 @@ namespace MvcHomework3.Controllers
             {
                 return HttpNotFound();
             }
-            return View(customer);
+
+            //AutoMapper.Mapper.DynamicMap<List<Contact>, List<ContactUpdateVM>>(customer.Contacts.ToList(), contactVMList);
+            AutoMapper.Mapper.CreateMap<Contact, ContactUpdateVM>();
+            List<ContactUpdateVM> contactVMList = AutoMapper.Mapper.Map<List<Contact>, List<ContactUpdateVM>>(customer.Contacts.ToList());
+            ViewBag.Contacts = contactVMList;
+
+            AutoMapper.Mapper.CreateMap<Bank, BankUpdateVM>();
+            List<BankUpdateVM> bankVMList = AutoMapper.Mapper.Map<List<Bank>, List<BankUpdateVM>>(customer.Banks.ToList());
+
+            ViewBag.Banks = //customer.Banks.ToList();
+                //AutoMapper.Mapper.DynamicMap<List<BankUpdateVM>>(customer.Banks.ToList());
+                bankVMList;
+
+            return View(AutoMapper.Mapper.DynamicMap<CustomerUpdateVM>(customer));
         }
 
         // POST: /Customer/Edit/5
@@ -128,9 +154,11 @@ namespace MvcHomework3.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,Name,EIN,Phone,Fax,Address,Email")] CustomerUpdateVM customer)
+        public ActionResult Edit([Bind(Include = "Id,Name,EIN,Phone,Fax,Address,Email")] CustomerUpdateVM customer,
+            List<ContactUpdateVM> contacts,
+            List<BankUpdateVM> banks)
         {
-            if (TryUpdateModel(customer)) //ModelState.IsValid)
+            if (TryUpdateModel(customer) && ModelState.IsValid)
             {
                 //db.Entry(customer).State = EntityState.Modified;
                 //db.SaveChanges();
@@ -142,9 +170,35 @@ namespace MvcHomework3.Controllers
                 //updated.Address = customer.Address;
                 //updated.Email = customer.Email;
                 AutoMapper.Mapper.DynamicMap<CustomerUpdateVM, Customer>(customer, updated);
+
+                // update contacts
+                foreach (var item in contacts)
+                {
+                    //if (TryUpdateModel(item))
+                    //{
+                        var updatedItem = contactRepo.All().SingleOrDefault(i => i.Id == item.Id);
+                        //updatedContact.Title = item.Title;
+                        //updatedContact.Name = item.Name;
+                        //updatedContact.Email = item.Email;
+                        //updatedContact.Mobile = item.Mobile;
+                        //updatedContact.Phone = item.Phone;
+                        AutoMapper.Mapper.DynamicMap<ContactUpdateVM, Contact>(item, updatedItem);
+                    //}
+                }
+
+                // update banks
+                foreach(var item in banks)
+                {
+                    var updatedItem = bankRepo.All().SingleOrDefault(i => i.Id == item.Id);
+                    AutoMapper.Mapper.DynamicMap<BankUpdateVM, Bank>(item, updatedItem);
+                }
+
                 repo.UnitOfWork.Commit();
                 return RedirectToAction("Index");
             }
+
+            ViewBag.Contacts = contacts;
+            ViewBag.Banks = banks;
             return View(customer);
         }
 

@@ -1,4 +1,4 @@
-﻿@model MvcHomework3.Models.Customer
+﻿@model MvcHomework3.Models.CustomerUpdateVM
 
 @{
     ViewBag.Title = "Edit";
@@ -14,7 +14,7 @@
     <div class="form-horizontal">
         <h4>Customer</h4>
         <hr />
-        @Html.ValidationSummary(true)
+        @Html.ValidationSummary(false)
         @Html.HiddenFor(model => model.Id)
 
         <div class="form-group">
@@ -65,12 +65,134 @@
             </div>
         </div>
 
+        <div>
+            <h5>Contacts</h5>
+            <p>
+                @Html.ActionLink("Create New", "Create", "Contact")
+            </p>
+            @{ var contacts = ViewBag.Contacts as List<MvcHomework3.Models.ContactUpdateVM>; }
+            <table class="table">
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => contacts.FirstOrDefault().Title)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => contacts.FirstOrDefault().Name)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => contacts.FirstOrDefault().Email)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => contacts.FirstOrDefault().Mobile)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => contacts.FirstOrDefault().Phone)
+                    </th>
+                    <th></th>
+                </tr>
+                
+                @for(int i = 0; i< contacts.Count;i++)
+                {
+                    <tr>
+                        <td>
+                            @Html.HiddenFor(modelItem => contacts[i].Id)
+                            @Html.HiddenFor(modelItem => contacts[i].CustomerId)
+                            @Html.EditorFor(modelItem => contacts[i].Title)
+                            @Html.ValidationMessageFor(modelItem => contacts[i].Title)
+                        </td>
+                        <td>
+                            @Html.EditorFor(modelItem => contacts[i].Name)
+                            @Html.ValidationMessageFor(modelItem => contacts[i].Name)
+                        </td>
+                        <td>
+                            @Html.EditorFor(modelItem => contacts[i].Email)
+                            @Html.ValidationMessageFor(modelItem => contacts[i].Email)
+                        </td>
+                        <td>
+                            @Html.EditorFor(modelItem => contacts[i].Mobile)
+                            @Html.ValidationMessageFor(modelItem => contacts[i].Mobile)
+                        </td>
+                        <td>
+                            @Html.EditorFor(modelItem => contacts[i].Phone)
+                            @Html.ValidationMessageFor(modelItem => contacts[i].Phone)
+                        </td>
+                        <td>
+                            @Html.ActionLink("Edit", "Edit", "Contact", new { id = contacts[i].Id }, "") |
+                            @Html.ActionLink("Details", "Details", "Contact", new { id = contacts[i].Id }, "") |
+                            @Html.ActionLink("Delete", "Delete", "Contact", new { id = contacts[i].Id }, "")
+                        </td>
+                    </tr>
+                }
+
+            </table>
+            <h5>Banks</h5>
+            <p>
+                @Html.ActionLink("Create New", "Create", "Bank")
+            </p>
+            @{ var banks = ViewBag.Banks as List<MvcHomework3.Models.BankUpdateVM>; }
+            <table class="table">
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => banks.FirstOrDefault().銀行名稱)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => banks.FirstOrDefault().銀行代碼)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => banks.FirstOrDefault().分行代碼)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => banks.FirstOrDefault().帳戶名稱)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => banks.FirstOrDefault().帳戶號碼)
+                    </th>
+                    <th></th>
+                </tr>
+                
+                @for (int i = 0; i < banks.Count; i++ )
+                {
+                    <tr>
+                        <td>
+                            @Html.HiddenFor(modelItem => banks[i].Id)
+                            @Html.EditorFor(modelItem => banks[i].銀行名稱)
+                            @Html.ValidationMessageFor(modelItem => banks[i].銀行名稱)
+                        </td>
+                        <td>
+                            @Html.EditorFor(modelItem => banks[i].銀行代碼)
+                            @Html.ValidationMessageFor(modelItem => banks[i].銀行代碼)
+                        </td>
+                        <td>
+                            @Html.EditorFor(modelItem => banks[i].分行代碼)
+                            @Html.ValidationMessageFor(modelItem => banks[i].分行代碼)
+                        </td>
+                        <td>
+                            @Html.EditorFor(modelItem => banks[i].帳戶名稱)
+                            @Html.ValidationMessageFor(modelItem => banks[i].帳戶名稱)
+                        </td>
+                        <td>
+                            @Html.EditorFor(modelItem => banks[i].帳戶號碼)
+                            @Html.ValidationMessageFor(modelItem => banks[i].帳戶號碼)
+                        </td>
+                        <td>
+                            @Html.ActionLink("Edit", "Edit", "Bank", new { id = banks[i].Id }, "") |
+                            @Html.ActionLink("Details", "Details", "Bank", new { id = banks[i].Id }, "") |
+                            @Html.ActionLink("Delete", "Delete", "Bank", new { id = banks[i].Id }, "")
+                        </td>
+                    </tr>
+                }
+
+            </table>
+        </div>
+
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
                 <input type="submit" value="Save" class="btn btn-default" />
             </div>
         </div>
     </div>
+    
+    
 }
 
 <div>

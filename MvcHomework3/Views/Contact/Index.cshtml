@@ -1,4 +1,4 @@
-﻿@model IEnumerable<MvcHomework3.Models.Customer>
+﻿@model IEnumerable<MvcHomework3.Models.Contact>
 
 @{
     ViewBag.Title = "Index";
@@ -7,31 +7,27 @@
 <h2>Index</h2>
 
 <p>
-    @Html.ActionLink("Export", "Download")
-</p>
-<p>
     @Html.ActionLink("Create New", "Create")
 </p>
-    
 <table class="table">
     <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Title)
+        </th>
         <th>
             @Html.DisplayNameFor(model => model.Name)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.EIN)
+            @Html.DisplayNameFor(model => model.Email)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Mobile)
         </th>
         <th>
             @Html.DisplayNameFor(model => model.Phone)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Fax)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Address)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Email)
+            @Html.DisplayNameFor(model => model.Customer.Name)
         </th>
         <th></th>
     </tr>
@@ -39,22 +35,22 @@
 @foreach (var item in Model) {
     <tr>
         <td>
+            @Html.DisplayFor(modelItem => item.Title)
+        </td>
+        <td>
             @Html.DisplayFor(modelItem => item.Name)
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.EIN)
+            @Html.DisplayFor(modelItem => item.Email)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Mobile)
         </td>
         <td>
             @Html.DisplayFor(modelItem => item.Phone)
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.Fax)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Address)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Email)
+            @Html.DisplayFor(modelItem => item.Customer.Name)
         </td>
         <td>
             @Html.ActionLink("Edit", "Edit", new { id=item.Id }) |
@@ -65,4 +61,3 @@
 }
 
 </table>
-

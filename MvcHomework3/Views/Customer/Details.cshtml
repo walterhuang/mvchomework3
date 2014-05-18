@@ -60,6 +60,100 @@
 
     </dl>
 </div>
+<div>
+    <h5>Contacts</h5>
+    <table class="table">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Contacts.FirstOrDefault().Title)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Contacts.FirstOrDefault().Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Contacts.FirstOrDefault().Email)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Contacts.FirstOrDefault().Mobile)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Contacts.FirstOrDefault().Phone)
+            </th>
+            <th></th>
+        </tr>
+        @{ var contacts = ViewBag.Contacts as List<MvcHomework3.Models.Contact>; }
+        @foreach (var item in contacts)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Title)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Email)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Mobile)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Phone)
+                </td>
+                <td>
+                    @Html.ActionLink("Delete", "Delete", "Contact", new { id = item.Id }, "")
+                </td>
+            </tr>
+        }
+
+    </table>
+    <h5>Banks</h5>
+    <table class="table">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Banks.FirstOrDefault().銀行名稱)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Banks.FirstOrDefault().銀行代碼)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Banks.FirstOrDefault().分行代碼)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Banks.FirstOrDefault().帳戶名稱)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Banks.FirstOrDefault().帳戶號碼)
+            </th>
+            <th></th>
+        </tr>
+        @{ var banks = ViewBag.Banks as List<MvcHomework3.Models.Bank>; }
+        @foreach (var item in banks)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.銀行名稱)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.銀行代碼)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.分行代碼)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.帳戶名稱)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.帳戶號碼)
+                </td>
+                <td>
+                    @Html.ActionLink("Delete", "Delete", "Bank", new { id = item.Id }, "")
+                </td>
+            </tr>
+        }
+
+    </table>
+</div>
 <p>
     @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
     @Html.ActionLink("Back to List", "Index")

@@ -39,7 +39,7 @@ namespace MvcHomework3.Models
                 .Where(c => c.CustomerId == CustomerId)
                 .Where(c => c.Id != Id)
                 .Any(e => e.Email == Email))
-                yield return new ValidationResult("Email duplicated.");
+                yield return new ValidationResult("Email duplicated.", new[] { "Email" });
         }
     }
 }

@@ -13,8 +13,9 @@ namespace MvcHomework3.Models
             if (!string.IsNullOrEmpty(Email) &&
                 RepositoryHelper.GetContactRepository().All()
                 .Where(c => c.CustomerId == CustomerId)
+                .Where(c => c.Id != Id)
                 .Any(e => e.Email == Email))
-                yield return new ValidationResult("Email duplicated.");
+                yield return new ValidationResult("Email duplicated.", new[] { "Email" });
         }
     }
 

@@ -1,17 +1,8 @@
 ﻿@model MvcHomework3.Models.Bank
 
-@{
-    ViewBag.Title = "Details";
-}
-
-<h2>Details</h2>
-
-@Html.DisplayForModel()
-@Html.DisplayFor(m=>m)
-
 <div>
     <h4>Bank</h4>
-	<hr />
+    <hr />
     <dl class="dl-horizontal">
         <dt>
             @Html.DisplayNameFor(model => model.銀行名稱)
@@ -63,7 +54,3 @@
 
     </dl>
 </div>
-<p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
-    @Html.ActionLink("Back to List", "Index")
-</p>

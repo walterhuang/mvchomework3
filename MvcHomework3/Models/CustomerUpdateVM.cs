@@ -32,5 +32,8 @@ namespace MvcHomework3.Models
         [StringLength(250, ErrorMessage = "欄位長度不得大於 250 個字元")]
         [EmailAddress]
         public string Email { get; set; }
+
+        [Required] 
+        public DateTime BD { get; set; }
     }
 }

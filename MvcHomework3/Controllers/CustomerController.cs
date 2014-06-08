@@ -90,8 +90,8 @@ namespace MvcHomework3.Controllers
                 return HttpNotFound();
             }
 
-            ViewBag.Contacts = customer.Contacts.ToList();
-            ViewBag.Banks = customer.Banks.ToList();
+            //ViewBag.Contacts = customer.Contacts.ToList();
+            //ViewBag.Banks = customer.Banks.ToList();
 
             return View(customer);
         }
@@ -154,7 +154,8 @@ namespace MvcHomework3.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,Name,EIN,Phone,Fax,Address,Email")] CustomerUpdateVM customer,
+        public ActionResult Edit(//[Bind(Include = "Id,Name,EIN,Phone,Fax,Address,Email")] 
+            CustomerUpdateVM customer,
             List<ContactUpdateVM> contacts,
             List<BankUpdateVM> banks)
         {
@@ -235,6 +236,27 @@ namespace MvcHomework3.Controllers
                 repo.UnitOfWork.Context.Dispose(); //db.Dispose();
             }
             base.Dispose(disposing);
+        }
+
+        public ActionResult BankList(int id)
+        {
+            var data = bankRepo.All().Where(b => b.CustomerId == id).ToList();
+            return PartialView(data);
+        }
+
+        public ActionResult ContactList(int id)
+        {
+            var data = contactRepo.All().Where(c => c.CustomerId == id).ToList();
+            return PartialView(data);
+        }
+
+        [HttpPost]
+        public ActionResult Upload(HttpPostedFileBase file)
+        {
+            //file.SaveAs(file.FileName); //### don't! in ie, this will be full path on client
+            var fileName = Path.GetFileName(file.FileName);
+            file.SaveAs(Server.MapPath("~/App_Data/" + fileName));
+            return View();
         }
     }
 }

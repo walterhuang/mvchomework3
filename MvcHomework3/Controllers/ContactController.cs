@@ -88,6 +88,15 @@ namespace MvcHomework3.Controllers
             ContactUpdateVM vm = new ContactUpdateVM();
             AutoMapper.Mapper.DynamicMap<Contact, ContactUpdateVM>(contact, vm);
             ViewBag.CustomerId = new SelectList(/*db.Customers*/ customerRepo.All(), "Id", "Name", contact.CustomerId);
+
+            var titles = //repo.All().ToList();
+                repo.All().Select(i => i.Title).Distinct().ToList();
+            var selectList = new List<SelectListItem>();
+            foreach (var item in titles)
+                selectList.Add(new SelectListItem { Text = item, Value = item });
+            
+            ViewBag.TitleList = new SelectList(selectList, "Value", "Text", vm.Title);
+            
             return View(vm);
         }
 

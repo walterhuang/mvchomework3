@@ -29,6 +29,7 @@
           <Property Name="地址" Type="nvarchar" MaxLength="100" />
           <Property Name="Email" Type="nvarchar" MaxLength="250" />
           <Property Name="IsDelete" Type="bit" Nullable="false" />
+          <Property Name="BD" Type="datetime" Nullable="false" />
         </EntityType>
         <EntityType Name="客戶銀行資訊">
           <Key>
@@ -110,6 +111,7 @@
           <NavigationProperty Name="Contacts" Relationship="Self.FK_客戶聯絡人_客戶資料" FromRole="客戶資料" ToRole="客戶聯絡人" />
           <NavigationProperty Name="Banks" Relationship="Self.FK_客戶銀行資訊_客戶資料" FromRole="客戶資料" ToRole="客戶銀行資訊" />
           <Property Name="IsDelete" Type="Boolean" Nullable="false" />
+          <Property Name="BD" Type="DateTime" Nullable="false" Precision="3" />
         </EntityType>
         <EntityType Name="Bank">
           <Key>
@@ -183,6 +185,7 @@
           <EntitySetMapping Name="Customers">
             <EntityTypeMapping TypeName="CustomerModel.Customer">
               <MappingFragment StoreEntitySet="客戶資料">
+                <ScalarProperty Name="BD" ColumnName="BD" />
                 <ScalarProperty Name="IsDelete" ColumnName="IsDelete" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Name" ColumnName="客戶名稱" />

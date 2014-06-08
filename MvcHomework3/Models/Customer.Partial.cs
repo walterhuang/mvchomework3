@@ -34,7 +34,11 @@ namespace MvcHomework3.Models
         
         [StringLength(250, ErrorMessage="欄位長度不得大於 250 個字元")]
         [EmailAddress]
+        [UIHint("EmailAddress2")]
         public string Email { get; set; }
+
+        [Required]
+        public DateTime BD { get; set; }
     
         public virtual ICollection<Contact> Contacts { get; set; }
         public virtual ICollection<Bank> Banks { get; set; }

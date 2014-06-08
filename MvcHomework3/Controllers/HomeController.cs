@@ -26,5 +26,11 @@ namespace MvcHomework3.Controllers
 
             return View();
         }
+
+        public ActionResult GetTime()
+        {
+            return HttpNotFoundResult;
+            //return DateTime.Now.ToString();
+        }
     }
 }

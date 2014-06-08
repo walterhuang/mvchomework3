@@ -29,7 +29,7 @@ namespace MvcHomework3.Controllers
 
         public ActionResult GetTime()
         {
-            return HttpNotFoundResult;
+            return new HttpNotFoundResult();
             //return DateTime.Now.ToString();
         }
     }
